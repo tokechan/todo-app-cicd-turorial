@@ -84,7 +84,6 @@ jobs:
 
       - name: Deploy Firebase
         run: |
-          firebase experiments:enable webframeworks
           firebase deploy --only hosting --non-interactive
 
       - name: Remove private key
