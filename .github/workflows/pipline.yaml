@@ -82,10 +82,18 @@ jobs:
           printf '%s' "${{ secrets.FIREBASE_SERVICE_ACCOUNT_B64 }}" > "$RUNNER_TEMP/key.json"
           echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/key.json" >> $GITHUB_ENV
 
+      - name: Validate service account JSON & project
+        run: |
+          sudo apt-get update && sudo apt-get install -y jq >/dev/null
+          echo "SA project_id: $(jq -r '.project_id' "$RUNNER_TEMP/key.json")"
+          echo "SA type      : $(jq -r '.type' "$RUNNER_TEMP/key.json")"
+
+
+
       - name: Deploy Firebase
         run: |
           firebase deploy --only hosting --non-interactive
 
-      - name: Remove private key
+      - name: Remove private key 
         if: always()
         run: rm $RUNNER_TEMP/key.json
