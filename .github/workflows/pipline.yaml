@@ -92,7 +92,8 @@ jobs:
 
       - name: Deploy Firebase
         run: |
-          firebase deploy --only hosting --non-interactive
+          firebase deploy --only hosting --project ${{ secrets.FIREBASE_PROJECT_ID }} --non-interactive
+
 
       - name: Remove private key 
         if: always()
