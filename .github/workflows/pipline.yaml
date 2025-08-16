@@ -79,13 +79,15 @@ jobs:
 
       - name: Prepeare Google Application Credentials
         run: |
-          echo ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }} | base64 --decode > $HOME/private-key.json
+          printf '%s' "${{ secrets.FIREBASE_SERVICE_ACCOUNT_B64 }}" | base64 --d > $RUNNER_TEMP/key.json
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/key.json" >> $GITHUB_ENV
 
       - name: Deploy Firebase
         run: |
-          export GOOGLE_APPLICATION_CREDENTIALS=$HOME/private-key.json
+          export GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/key.json
           firebase experiments:enable webframeworks
           firebase deploy --only hosting
+
       - name: Remove private key
         if: always()
-        run: rm $HOME/private-key.json
+        run: rm $RUNNER_TEMP/key.json
