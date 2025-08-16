@@ -79,7 +79,7 @@ jobs:
 
       - name: Prepeare Google Application Credentials
         run: |
-          printf '%s' "${{ secrets.FIREBASE_SERVICE_ACCOUNT_B64 }}" > "$RUNNER_TEMP/key.json"
+          printf '%s' "${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}" > "$RUNNER_TEMP/key.json"
           echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/key.json" >> $GITHUB_ENV
 
       - name: Validate service account JSON & project
@@ -87,6 +87,7 @@ jobs:
           sudo apt-get update && sudo apt-get install -y jq >/dev/null
           echo "SA project_id: $(jq -r '.project_id' "$RUNNER_TEMP/key.json")"
           echo "SA type      : $(jq -r '.type' "$RUNNER_TEMP/key.json")"
+          test -s "$RUNNER_TEMP/key.json" || { echo "empty key.json (secret missing)"; exit 1; }
 
 
 
